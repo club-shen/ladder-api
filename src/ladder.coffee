@@ -63,32 +63,37 @@ class Game
 	winner = null # the winner of the game
 
 	constructor: (game, @match) ->
+
+		@reports = game.reports
+
 		# analyze game status
 		# ===================
 
+		if not @reports?
+			@status = MatchStatus.PENDING
+			return this
+
 		# check if the reports are complete
 		for i in [0..1]
-			if not report(i).stage? or not report(i).winner? or not report(i).characters?
+			if not @reports[i].stage? or not @reports[i].winner? or not @reports[i].characters?
 				@status = MatchStatus.PENDING
 		# check if both reports are equal
-		if report(0).stage is report(1).stage and
-		report(0).winner is report(1).winner and
-		report(0).characters[0] is report(1).characters[0] and
-		report(0).characters[1] is report(1).characters[1]
+		if @reports[0].stage is @reports[1].stage and
+		@reports[0].winner is @reports[1].winner and
+		@reports[0].characters[0] is @reports[1].characters[0] and
+		@reports[0].characters[1] is @reports[1].characters[1]
 			@status = MatchStatus.VALID
-
-		# at this point, both reports would have to be complete but not equal, so it's invalid
-		@status = MatchStatus.INVALID
+		else
+			# at this point, both reports would have to be complete but not equal, so it's invalid
+			@status = MatchStatus.INVALID
 
 		# extract information from game
 		# =============================
 
 		if @status is MatchStatus.VALID
-			@winner = report(0).winner
-			@characters = report(0).characters
-			@stage = report(0).stage
-
-	report: (i) -> game.reports[i]
+			@winner = @reports[0].winner
+			@characters = @reports[0].characters
+			@stage = @reports[0].stage
 
 	toElement: () -> """
 		<div class="game">
@@ -114,18 +119,20 @@ class Match
 
 	@createList: (matchArray) ->
 		matches = []
-		for i, v of @matchArray
+		for i, v of matchArray
 			matches.push(new Match(i, v))
 		return matches
 
 	constructor: (@id, match) ->
-		games = []
+
+		@games = []
 		for i, game of match.games
-			games.push(new Game(game, match))
+			@games.push(new Game(game, match))
 
 		@set = match.set
 		@time = match.time
 		@status = MatchStatus.PENDING
+		@players = match.players
 
 		if match.set != 3 && match.set != 5
 			console.log "[WARNING] match #{mid} has an invalid set number #{match.set}, so we'll assume it's 3"
@@ -135,7 +142,7 @@ class Match
 			console.log "[ERROR] This match has an invalid number of players (need 2, but found #{match.players.length})"
 			@status = MatchStatus.INVALID
 
-		for game in games
+		for game in @games
 			if game.status is MatchStatus.INVALID or game.status is MatchStatus.PENDING
 				@status = game.status
 				break
@@ -145,7 +152,7 @@ class Match
 			@stages = []
 			@characters = [[], []]
 
-			for i, game of games
+			for i, game of @games
 				if game.winner is 0 then wins[0]++
 				if game.winner is 1 then wins[1]++
 
@@ -155,24 +162,20 @@ class Match
 
 			if @set is 3 and wins[0] >= 2 or @set is 5 and wins[0] >= 3
 				@winner = 0
-				break
 
 			if @set is 3 and wins[1] >= 2 or @set is 5 and wins[1] >= 3
 				@winner = 1
-				break
 
-	player = (i) -> match.players[i]
+	player: (i) -> @players[i]
 
-	challenger = -> @player 0
-	defender = -> @player 1
+	challenger: -> @player 0
+	defender: -> @player 1
 
-	game = (i) -> games[i]
+	game: (i) -> @games[i]
 
-	setCount = -> match.set
+	setCount: -> @set
 
-	gameCount = -> games.length
-
-	winner = ->
+	winner: ->
 		if @status() != 0 then return null
 		winners = {
 			0: 0
@@ -184,9 +187,9 @@ class Match
 		if(winners[1] >= 2) then return 1
 		return null
 
-	winnerName = () -> return @player(@winner())
+	winnerName: () -> return @player(@winner())
 
-	toElement = () ->
+	toElement: () ->
 		el = """
 			<div class="match">
 				<div class="match--title">
