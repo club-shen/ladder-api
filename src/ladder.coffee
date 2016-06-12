@@ -54,13 +54,13 @@ class MatchStatus
 #
 class Game
 
-	match: null # the match this game is a part of
-	status: null # the status of the game
+	match = null # the match this game is a part of
+	status = null # the status of the game
 
 	# the following variables will not be null if the game is VALID
-	stage: null # the stage used in this game
-	characters: [] # the characters used in this game
-	winner: null # the winner of the game
+	stage = null # the stage used in this game
+	characters = [] # the characters used in this game
+	winner = null # the winner of the game
 
 	constructor: (game, @match) ->
 		# analyze game status
@@ -161,18 +161,18 @@ class Match
 				@winner = 1
 				break
 
-	player: (i) -> match.players[i]
+	player = (i) -> match.players[i]
 
-	challenger: -> @player 0
-	defender: -> @player 1
+	challenger = -> @player 0
+	defender = -> @player 1
 
-	game: (i) -> games[i]
+	game = (i) -> games[i]
 
-	setCount: -> match.set
+	setCount = -> match.set
 
-	gameCount: -> games.length
+	gameCount = -> games.length
 
-	winner: ->
+	winner = ->
 		if @status() != 0 then return null
 		winners = {
 			0: 0
@@ -184,9 +184,9 @@ class Match
 		if(winners[1] >= 2) then return 1
 		return null
 
-	winnerName: () -> return @player(@winner())
+	winnerName = () -> return @player(@winner())
 
-	toElement: () ->
+	toElement = () ->
 		el = """
 			<div class="match">
 				<div class="match--title">
