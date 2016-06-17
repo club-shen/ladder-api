@@ -15,6 +15,22 @@ class Ladder
 		matches: []
 	}
 
+	@ref_title: (ladder_slug, season_slug) ->
+
+		if season_slug?
+			"ladders/#{ ladder_slug }/seasons/#{ season_slug }/title"
+		else
+			"ladders/#{ ladder_slug }/title"
+
+	@ref_players: (ladder_slug, season_slug) ->
+		"ladders/#{ ladder_slug }/seasons/#{ season_slug }/players"
+
+	@ref_matches: (ladder_slug, season_slug) ->
+		"ladders/#{ ladder_slug }/seasons/#{ season_slug }/matches"
+
+	@ref_player: (ladder_slug, season_slug, player_uid) ->
+		"ladders/#{ ladder_slug }/seasons/#{ season_slug }/players/#{ player_uid }"
+
 	# A map of uids and Player objects.
 	players: {}
 
@@ -31,9 +47,12 @@ class Ladder
 	# Creates a Ladder object using the slug of the game and the Database object.
 	# After the Ladder object is constructed, it will automatically
 	# retrieve all the players from the database.
-	constructor: (@slug, @database) ->
+	constructor: (@ladder_slug, @database) ->
 
 		@firebase = @database.firebase
+		@season_slug = "spring-2016"
+
+		@tag = "(#{ @ladder_slug }//#{ @season_slug })"
 
 		@retrievePlayers(=> @retrieveMatches(=> @updateStats()))
 
@@ -50,19 +69,32 @@ class Ladder
 
 		if @players[uid]? then return @players[uid]
 
-		console.log "[INFO] tried to find player with uid #{ uid } but it doesn't exist, creating a new one..."
+		throw new Error("Player with UID \"#{ uid }\" in #{ @tag } doesn't exist.")
 
-		ref = @firebase.ref("ladders/#{ @slug }/users/#{ uid }")
-		ref.once("value", (snapshot) ->
-			if(!snapshot.exists())
-				ref.set(Ladder.player_object).then(->
-					console.log "Created Ranking Profile for UID: " + uid
-				).catch((error) ->
-					console.log "Failed trying to create Ranking Profile for UID: " + uid + ", " + error.message
-				)
-		)
+	playerExists: (user) ->
+
+		if typeof user is 'string' # this is probably some user's name
+			uid = user
+
+		if typeof user is 'object' # this is (hopefully) a User object
+			uid = user.uid
+
+		return @players[uid]?
 
 	getPlayerByRank: (rank) -> @getPlayer(@player_rankings[rank])
+
+	# Gets a Player object given the player's name.
+	# This will return an *array* of Player objects, since it's possible
+	# for multiple players to share the same name.
+	getPlayersByName: (name) ->
+
+		players = []
+
+		for uid, player of @players
+			if player.user.display_name.valueOf() is name
+				players.push player
+
+		return players
 
 	insertMatch: (set, players, games) =>
 		now = Date.now()
@@ -80,17 +112,16 @@ class Ladder
 				]
 			}
 
-		@firebase.ref("ladders/#{ @slug }/matches").push(match)
+		@firebase.ref(Ladder.ref_matches(@ladder_slug, @season_slug)).push(match)
 
 	retrievePlayers: (callback) =>
 
 		@players = {}
 		@player_rankings = []
 
-		query = @firebase.ref("ladders/smash-4/users").orderByChild("rating")
-		time = Date.now()
+		query = @firebase.ref(Ladder.ref_players(@ladder_slug, @season_slug)).orderByChild("rating")
 
-		console.log "[INFO] retrieving players in #{ @slug }..."
+		console.log "[INFO] #{ @tag } retrieving players..."
 		query.once "value", (ss) =>
 
 			ss.forEach (child) =>
@@ -108,7 +139,7 @@ class Ladder
 
 				false
 
-			console.log "[INFO] retrieval finished. #{ @player_rankings.length } players found in #{ (Date.now() - time) / 1000 }s."
+			console.log "[INFO] #{ @tag } retrieval finished. #{ @player_rankings.length } players found."
 			@player_rankings.reverse()
 			if callback? then callback(@players)
 
@@ -117,10 +148,9 @@ class Ladder
 		@matches = {}
 		@match_order = []
 
-		query = @firebase.ref("ladders/smash-4/matches").orderByChild("time")
-		time = Date.now()
+		query = @firebase.ref(Ladder.ref_matches(@ladder_slug, @season_slug)).orderByChild("time")
 
-		console.log "[INFO] retrieving matches..."
+		console.log "[INFO] #{ @tag } retrieving matches..."
 		query.once "value", (ss) =>
 
 			ss.forEach (child) =>
@@ -133,17 +163,17 @@ class Ladder
 
 				false
 
-			console.log "[INFO] retrieval finished. #{ @match_order.length } matches found in #{ (Date.now() - time) / 1000 }s."
+			console.log "[INFO] #{ @tag } retrieval finished. #{ @match_order.length } matches found."
 			if callback? then callback(@matches)
 
 	updateStats: =>
 
-		console.log "[INFO] clearing all player statistics..."
+		console.log "[INFO] #{ @tag } clearing all player statistics..."
 
 		for uid, player of @players
 			player.reset_stats()
 
-		console.log "[INFO] calculating player statistics..."
+		console.log "[INFO] #{ @tag } calculating player statistics..."
 
 		for uid, match of @matches
 
@@ -152,17 +182,15 @@ class Ladder
 				match.player(0).apply_match(match)
 				match.player(1).apply_match(match)
 
-			@firebase.ref("ladders/smash-4/matches/#{ uid }/status").set(match.status)
-
-		console.log "[INFO] calculations finished."
+		console.log "[INFO] #{ @tag } calculations finished."
 
 		@savePlayers()
 
 	savePlayers: =>
 
-		console.log "[INFO] saving current players to database..."
-		for uid, player of @players
-			@firebase.ref("ladders/smash-4/users/#{ uid }").set(player.db_object())
+		console.log "[INFO] #{ @tag } saving current players to database..."
+		for player_uid, player of @players
+			@firebase.ref(Ladder.ref_player(@ladder_slug, @season_slug, player_uid)).set(player.db_object())
 
 # class Rankings
 #
