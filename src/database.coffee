@@ -1,6 +1,7 @@
 
 User = require "./user"
 Ladder = require "./ladder"
+Reactor = require "./reactor"
 
 # A wrapper class for the firebase database object.
 #
@@ -11,9 +12,13 @@ class Database
 
 	ladders: {}
 
+	reactor: new Reactor() # event system
+
 	constructor: (@firebase) ->
 
-		@retrieveUsers()
+		@reactor.registerEvent "ready"
+
+		@retrieveUsers => @reactor.dispatchEvent "ready"
 
 	getLadder: (slug) -> @ladders[slug] ? @ladders[slug] = new Ladder(slug, this)
 
@@ -21,7 +26,7 @@ class Database
 
 	getUser: (uid) -> @users[uid]
 
-	retrieveUsers: ->
+	retrieveUsers: (callback) ->
 
 		console.log "[INFO] retrieving users from database..."
 
@@ -36,3 +41,9 @@ class Database
 				false
 
 			console.log "[INFO] retrieval finished. #{ Object.keys(@users).length } users found."
+
+			callback()
+
+	on: (event, callback) ->
+
+		if @reactor.eventExists event then @reactor.addEventListener event, callback
