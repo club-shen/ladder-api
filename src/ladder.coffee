@@ -8,8 +8,6 @@ Status = require "./status"
 module.exports =
 class Ladder
 
-	stats: new UserStats()
-
 	@player_object: {
 		rating: 1500
 		wins: 0
@@ -37,7 +35,7 @@ class Ladder
 
 		@firebase = @database.firebase
 
-		@retrievePlayers()
+		@retrievePlayers(=> @retrieveMatches(=> @updateStats()))
 
 	# Gets a Player object given either a uid or User object.
 	# If a player cannot be found, a temporary one will be created for
