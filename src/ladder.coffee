@@ -103,7 +103,6 @@ class Ladder
 				if @database.userExists uid # use their user object
 					user = @database.getUser uid
 				else
-					console.log "user not found for player uid #{ child.key }"
 					user = new User(uid)
 
 				@players[uid] = new Player(user, player_object)

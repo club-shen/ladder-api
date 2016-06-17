@@ -47,8 +47,6 @@ class Player
 			# calculate the adjusted rating using ELO
 			adjusted_rating = Elo.adjust(@rating, opponent.rating, score, k, floor)
 
-			console.log "rating of player #{ @user.display_name } adjusted from #{ @rating } to #{ adjusted_rating }"
-
 			@rating = adjusted_rating
 
 			# set statistics

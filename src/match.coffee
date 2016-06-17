@@ -62,8 +62,6 @@ class Match
 				@winner = 1
 				@status = Status.VALID
 
-			console.log "match status is #{ @status }"
-
 	player: (i) -> @ladder.getPlayer @player_uids[i]
 
 	challenger: -> @player 0
