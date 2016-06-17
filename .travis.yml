@@ -2,7 +2,7 @@
 before_script:
     - npm install -g coffee-script
     - npm install -g browserify
-    
+
 script:
-    - coffee -c .
-    - browserify main.js > ladder.js
+    - coffee -o lib -c src
+    - browserify lib/main.js > shen-ladder.js
