@@ -40,7 +40,7 @@ class Database
 
 		@users = {}
 
-		@firebaseDB.ref("users").once "value", (ss) =>
+		success = (ss) =>
 
 			ss.forEach (child) =>
 
@@ -51,6 +51,12 @@ class Database
 			Database.log "done. #{ Object.keys(@users).length } users found."
 
 			callback()
+
+		error = (err) ->
+
+			Database.log err
+
+		@firebaseDB.ref("users").once("value", success, error).catch(error)
 
 	readLadders: (callback) ->
 

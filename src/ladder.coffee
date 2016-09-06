@@ -31,6 +31,8 @@ class Ladder
 	@ref_player: (ladder_slug, season_slug, player_uid) ->
 		"ladders/#{ ladder_slug }/seasons/#{ season_slug }/players/#{ player_uid }"
 
+	log: (message) -> console.log "shn-l #{ @ladder_slug }/#{ @season_slug } | #{ message }"
+
 	# A map of uids and Player objects.
 	players: {}
 
@@ -47,12 +49,11 @@ class Ladder
 	# Creates a Ladder object using the slug of the game and the Database object.
 	# After the Ladder object is constructed, it will automatically
 	# retrieve all the players from the database.
-	constructor: (@ladder_slug, @database) ->
+	constructor: (@ladder_slug, @season_slug, @database) ->
 
-		@firebase = @database.firebase
-		@season_slug = "spring-2016"
+		@firebase = @database.firebaseDB
 
-		@tag = "(#{ @ladder_slug }//#{ @season_slug })"
+		@tag = "()"
 
 		@retrievePlayers(=> @retrieveMatches(=> @updateStats()))
 
@@ -121,7 +122,7 @@ class Ladder
 
 		query = @firebase.ref(Ladder.ref_players(@ladder_slug, @season_slug)).orderByChild("rating")
 
-		console.log "[INFO] #{ @tag } retrieving players..."
+		@log "retrieving players..."
 		query.once "value", (ss) =>
 
 			ss.forEach (child) =>
@@ -139,7 +140,7 @@ class Ladder
 
 				false
 
-			console.log "[INFO] #{ @tag } retrieval finished. #{ @player_rankings.length } players found."
+			@log "retrieval finished. #{ @player_rankings.length } players found."
 			@player_rankings.reverse()
 			if callback? then callback(@players)
 
@@ -150,7 +151,7 @@ class Ladder
 
 		query = @firebase.ref(Ladder.ref_matches(@ladder_slug, @season_slug)).orderByChild("time")
 
-		console.log "[INFO] #{ @tag } retrieving matches..."
+		@log "retrieving matches..."
 		query.once "value", (ss) =>
 
 			ss.forEach (child) =>
@@ -163,17 +164,17 @@ class Ladder
 
 				false
 
-			console.log "[INFO] #{ @tag } retrieval finished. #{ @match_order.length } matches found."
+			@log "retrieval finished. #{ @match_order.length } matches found."
 			if callback? then callback(@matches)
 
 	updateStats: =>
 
-		console.log "[INFO] #{ @tag } clearing all player statistics..."
+		@log "clearing all player statistics..."
 
 		for uid, player of @players
 			player.reset_stats()
 
-		console.log "[INFO] #{ @tag } calculating player statistics..."
+		@log "calculating player statistics..."
 
 		for uid, match of @matches
 
@@ -182,13 +183,13 @@ class Ladder
 				match.player(0).apply_match(match)
 				match.player(1).apply_match(match)
 
-		console.log "[INFO] #{ @tag } calculations finished."
+		@log "calculations finished."
 
 		@savePlayers()
 
 	savePlayers: =>
 
-		console.log "[INFO] #{ @tag } saving current players to database..."
+		@log "saving current players to database..."
 		for player_uid, player of @players
 			@firebase.ref(Ladder.ref_player(@ladder_slug, @season_slug, player_uid)).set(player.db_object())
 

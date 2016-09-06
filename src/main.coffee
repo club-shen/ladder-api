@@ -1,5 +1,4 @@
 
-
 module.exports.Elo = require "./elo"
 module.exports.Status = require "./status"
 module.exports.Game = require "./game"
