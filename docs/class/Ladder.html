@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset='UTF-8'>
+  <title>CoffeeScript API Documentation</title>
+  <script src='../javascript/application.js'></script>
+  <script src='../javascript/search.js'></script>
+  <link rel='stylesheet' href='../stylesheets/application.css' type='text/css'>
+</head>
+  <body>
+    <div id='base' data-path='../'></div>
+<div id='header'>
+  <div id='menu'>
+    <a href='../extra/README.md.html' title='Shn-ranking-api'>
+      Shn-ranking-api
+    </a>
+    &raquo;
+    <a href='../alphabetical_index.html' title='Index'>
+      Index
+    </a>
+    &raquo;
+    <span class='title'>Ladder</span>
+  </div>
+</div>
+    <div id='content'>
+      <h1>
+        Class:
+        Ladder
+      </h1>
+      <table class='box'>
+        <tr>
+          <td>Defined in:</td>
+          <td>src&#47;ladder.coffee</td>
+        </tr>
+      </table>
+      <h2>Variables Summary</h2>
+      <dl class='constants'>
+  <dt id='player_object-variable'>
+    player_object
+    =
+  </dt>
+  <dd>
+    <pre><code class='coffeescript'>{
+  rating: 1500,
+  wins: 0,
+  losses: 0,
+  matches: []
+}</code></pre>
+    
+  </dd>
+  <dt id='players-variable'>
+    players
+    =
+  </dt>
+  <dd>
+    <pre><code class='coffeescript'>{}</code></pre>
+    <div class='docstring'>
+  <p>A map of uids and Player objects.</p>
+</div>
+<div class='tags'>
+</div>
+  </dd>
+  <dt id='player_rankings-variable'>
+    player_rankings
+    =
+  </dt>
+  <dd>
+    <pre><code class='coffeescript'>[]</code></pre>
+    <div class='docstring'>
+  <p>An array containing the uids of every Player ordered by rank.</p>
+</div>
+<div class='tags'>
+</div>
+  </dd>
+  <dt id='matches-variable'>
+    matches
+    =
+  </dt>
+  <dd>
+    <pre><code class='coffeescript'>{}</code></pre>
+    <div class='docstring'>
+  <p>A map of uids and Match objects.</p>
+</div>
+<div class='tags'>
+</div>
+  </dd>
+  <dt id='match_order-variable'>
+    match_order
+    =
+  </dt>
+  <dd>
+    <pre><code class='coffeescript'>[]</code></pre>
+    <div class='docstring'>
+  <p>An array containing the uids of every Match
+in the order they have taken place.</p>
+</div>
+<div class='tags'>
+</div>
+  </dd>
+</dl>
+      <h2>Class Method Summary</h2>
+      <ul class='summary'>
+  <li>
+    <span class='signature'>
+      <a href='#ref_title-static'>
+        .
+(void)
+<b>ref_title</b><span>(ladder_slug, season_slug)</span>
+      </a>
+    </span>
+    <span class='desc'>
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#ref_players-static'>
+        .
+(void)
+<b>ref_players</b><span>(ladder_slug, season_slug)</span>
+      </a>
+    </span>
+    <span class='desc'>
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#ref_matches-static'>
+        .
+(void)
+<b>ref_matches</b><span>(ladder_slug, season_slug)</span>
+      </a>
+    </span>
+    <span class='desc'>
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#ref_player-static'>
+        .
+(void)
+<b>ref_player</b><span>(ladder_slug, season_slug, player_uid)</span>
+      </a>
+    </span>
+    <span class='desc'>
+    </span>
+  </li>
+</ul>
+      <h2>Instance Method Summary</h2>
+      <ul class='summary'>
+  <li>
+    <span class='signature'>
+      <a href='#getPlayer-dynamic'>
+        #
+(void)
+<b>getPlayer</b><span>(user)</span>
+      </a>
+    </span>
+    <span class='desc'>
+      Gets a Player object given either a uid or User object. 
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#playerExists-dynamic'>
+        #
+(void)
+<b>playerExists</b><span>(user)</span>
+      </a>
+    </span>
+    <span class='desc'>
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#getPlayerByRank-dynamic'>
+        #
+(void)
+<b>getPlayerByRank</b><span>(rank)</span>
+      </a>
+    </span>
+    <span class='desc'>
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#getPlayersByName-dynamic'>
+        #
+(void)
+<b>getPlayersByName</b><span>(name)</span>
+      </a>
+    </span>
+    <span class='desc'>
+      Gets a Player object given the player&#39;s name. 
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#insertMatch-dynamic'>
+        #
+(void)
+<b>insertMatch</b><span>(set, players, games)</span>
+      </a>
+    </span>
+    <span class='bound note title'>Bound</span>
+    <span class='desc'>
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#retrievePlayers-dynamic'>
+        #
+(void)
+<b>retrievePlayers</b><span>(callback)</span>
+      </a>
+    </span>
+    <span class='bound note title'>Bound</span>
+    <span class='desc'>
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#retrieveMatches-dynamic'>
+        #
+(void)
+<b>retrieveMatches</b><span>(callback)</span>
+      </a>
+    </span>
+    <span class='bound note title'>Bound</span>
+    <span class='desc'>
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#updateStats-dynamic'>
+        #
+(void)
+<b>updateStats</b><span>()</span>
+      </a>
+    </span>
+    <span class='bound note title'>Bound</span>
+    <span class='desc'>
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#savePlayers-dynamic'>
+        #
+(void)
+<b>savePlayers</b><span>()</span>
+      </a>
+    </span>
+    <span class='bound note title'>Bound</span>
+    <span class='desc'>
+    </span>
+  </li>
+</ul>
+      <h2>Class Method Details</h2>
+      <div class='methods'>
+  <div class='method_details'>
+    <p class='signature' id='ref_title-static'>
+      .
+(void)
+<b>ref_title</b><span>(ladder_slug, season_slug)</span>
+      <br>
+    </p>
+    
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='ref_players-static'>
+      .
+(void)
+<b>ref_players</b><span>(ladder_slug, season_slug)</span>
+      <br>
+    </p>
+    
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='ref_matches-static'>
+      .
+(void)
+<b>ref_matches</b><span>(ladder_slug, season_slug)</span>
+      <br>
+    </p>
+    
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='ref_player-static'>
+      .
+(void)
+<b>ref_player</b><span>(ladder_slug, season_slug, player_uid)</span>
+      <br>
+    </p>
+    
+  </div>
+</div>
+      <h2>Constructor Details</h2>
+      <div class='methods'>
+  <div class='method_details'>
+    <p class='signature' id='constructor-dynamic'>
+      #
+(void)
+<b>constructor</b><span>(ladder_slug, season_slug, database)</span>
+      <br>
+    </p>
+    <div class='docstring'>
+  <p>Creates a Ladder object using the slug of the game and the Database object.
+After the Ladder object is constructed, it will automatically
+retrieve all the players from the database.</p>
+</div>
+<div class='tags'>
+</div>
+  </div>
+</div>
+      <h2>Instance Method Details</h2>
+      <div class='methods'>
+  <div class='method_details'>
+    <p class='signature' id='getPlayer-dynamic'>
+      #
+(void)
+<b>getPlayer</b><span>(user)</span>
+      <br>
+    </p>
+    <div class='docstring'>
+  <p>Gets a Player object given either a uid or User object.
+If a player cannot be found, a temporary one will be created for</p>
+</div>
+<div class='tags'>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='playerExists-dynamic'>
+      #
+(void)
+<b>playerExists</b><span>(user)</span>
+      <br>
+    </p>
+    
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='getPlayerByRank-dynamic'>
+      #
+(void)
+<b>getPlayerByRank</b><span>(rank)</span>
+      <br>
+    </p>
+    
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='getPlayersByName-dynamic'>
+      #
+(void)
+<b>getPlayersByName</b><span>(name)</span>
+      <br>
+    </p>
+    <div class='docstring'>
+  <p>Gets a Player object given the player&#39;s name.
+This will return an <em>array</em> of Player objects, since it&#39;s possible
+for multiple players to share the same name.</p>
+</div>
+<div class='tags'>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='insertMatch-dynamic'>
+      #
+(void)
+<b>insertMatch</b><span>(set, players, games)</span>
+      <span class='bound note'>Bound</span>
+      <br>
+    </p>
+    
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='retrievePlayers-dynamic'>
+      #
+(void)
+<b>retrievePlayers</b><span>(callback)</span>
+      <span class='bound note'>Bound</span>
+      <br>
+    </p>
+    
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='retrieveMatches-dynamic'>
+      #
+(void)
+<b>retrieveMatches</b><span>(callback)</span>
+      <span class='bound note'>Bound</span>
+      <br>
+    </p>
+    
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='updateStats-dynamic'>
+      #
+(void)
+<b>updateStats</b><span>()</span>
+      <span class='bound note'>Bound</span>
+      <br>
+    </p>
+    
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='savePlayers-dynamic'>
+      #
+(void)
+<b>savePlayers</b><span>()</span>
+      <span class='bound note'>Bound</span>
+      <br>
+    </p>
+    
+  </div>
+</div>
+    </div>
+    <div id='footer'>
+  By
+  <a href='https://github.com/coffeedoc/codo' title='CoffeeScript API documentation generator'>
+    Codo
+  </a>
+  2.1.2
+  &#10034;
+  Press H to see the keyboard shortcuts
+  &#10034;
+  <a href='http://twitter.com/netzpirat' target='_parent'>@netzpirat</a>
+  &#10034;
+  <a href='http://twitter.com/_inossidabile' target='_parent'>@_inossidabile</a>
+</div>
+<iframe id='search_frame'></iframe>
+<div id='fuzzySearch'>
+  <input type='text'>
+  <ol></ol>
+</div>
+<div id='help'>
+  <p>
+    Quickly fuzzy find classes, mixins, methods, file:
+  </p>
+  <ul>
+    <li>
+      <span>T</span>
+      Open fuzzy finder dialog
+    </li>
+  </ul>
+  <p>
+    Control the navigation frame:
+  </p>
+  <ul>
+    <li>
+      <span>L</span>
+      Toggle list view
+    </li>
+    <li>
+      <span>C</span>
+      Show class list
+    </li>
+    <li>
+      <span>I</span>
+      Show mixin list
+    </li>
+    <li>
+      <span>F</span>
+      Show file list
+    </li>
+    <li>
+      <span>M</span>
+      Show method list
+    </li>
+    <li>
+      <span>E</span>
+      Show extras list
+    </li>
+  </ul>
+  <p>
+    You can focus and blur the search input:
+  </p>
+  <ul>
+    <li>
+      <span>S</span>
+      Focus search input
+    </li>
+    <li>
+      <span>Esc</span>
+      Blur search input
+    </li>
+  </ul>
+</div>
+  </body>
+</html>
